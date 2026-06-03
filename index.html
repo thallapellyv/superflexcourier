@@ -581,7 +581,7 @@
         <div class="contact-item-icon">📧</div>
         <div class="contact-item-text">
           <strong>Email</strong>
-          info@superflexcourier.co.uk
+          superflexcourier@gmail.com
         </div>
       </div>
       <div class="contact-item">
@@ -601,11 +601,11 @@
     </div>
   </div>
   <div>
-    <div class="contact-form">
-      <input type="text" placeholder="Your Name" />
-      <input type="email" placeholder="Email Address" />
-      <input type="tel" placeholder="Phone Number" />
-      <select>
+    <form class="contact-form" id="quoteForm">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="tel" name="phone" placeholder="Phone Number" />
+      <select name="service" required>
         <option value="" disabled selected>Service Type</option>
         <option>Same-Day Delivery</option>
         <option>Next-Day Delivery</option>
@@ -613,13 +613,49 @@
         <option>Business Account</option>
         <option>Other</option>
       </select>
-      <input type="text" placeholder="Collection Postcode" />
-      <input type="text" placeholder="Delivery Postcode" />
-      <textarea placeholder="Tell us about your delivery (size, weight, urgency...)"></textarea>
-      <button class="btn-primary" onclick="alert('Thanks! We\'ll be in touch shortly.')">Send Quote Request →</button>
-    </div>
+      <input type="text" name="collection_postcode" placeholder="Collection Postcode" />
+      <input type="text" name="delivery_postcode" placeholder="Delivery Postcode" />
+      <textarea name="message" placeholder="Tell us about your delivery (size, weight, urgency...)"></textarea>
+      <button type="submit" class="btn-primary" id="submitBtn">Send Quote Request →</button>
+      <div id="formMsg" style="display:none; padding:1rem; border-radius:2px; text-align:center; font-weight:600;"></div>
+    </form>
   </div>
 </section>
+
+<script>
+document.getElementById("quoteForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  var btn = document.getElementById("submitBtn");
+  var msg = document.getElementById("formMsg");
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+
+  var formData = new FormData(this);
+  var response = await fetch("https://formspree.io/f/meewjvrj", {
+    method: "POST",
+    body: formData,
+    headers: { "Accept": "application/json" }
+  });
+
+  if (response.ok) {
+    msg.style.display = "block";
+    msg.style.background = "rgba(255,208,0,0.15)";
+    msg.style.border = "1px solid rgba(255,208,0,0.4)";
+    msg.style.color = "#FFD000";
+    msg.textContent = "Thanks! We will be in touch within the hour.";
+    this.reset();
+    btn.textContent = "Sent!";
+  } else {
+    msg.style.display = "block";
+    msg.style.background = "rgba(255,0,0,0.1)";
+    msg.style.border = "1px solid rgba(255,0,0,0.3)";
+    msg.style.color = "#ff6b6b";
+    msg.textContent = "Something went wrong. Please email superflexcourier@gmail.com directly.";
+    btn.textContent = "Send Quote Request";
+    btn.disabled = false;
+  }
+});
+</script>
 
 <!-- FOOTER -->
 <footer>
